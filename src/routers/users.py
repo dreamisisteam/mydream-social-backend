@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
 from models import User
 from dependencies.users import RegisterUser
@@ -33,4 +33,9 @@ async def get_user(username: str) -> User:
     :param username:
     :return: 200, GetUserSchema
     """
-    return await User.get(username=username)
+    user = await User.get_or_none(username=username)
+
+    if not user:
+        raise HTTPException(status_code=404)
+
+    return user

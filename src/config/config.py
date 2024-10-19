@@ -65,6 +65,23 @@ class Settings(BaseAppSettings):
     """Конфигурация приложения."""
 
     BASE_API_PREFIX: str = '/api'
+    INTERESTS_KEYS: list[str] = [
+        'travel',
+        'music',
+        'sport',
+        'films',
+        'student_community',
+        'social_interaction',
+        'entertainment',
+        'technologies',
+        'science',
+        'ai',
+    ]
+
+    CORS_ALLOW_ORIGINS: list[str] = ['*']
+    CORS_ALLOW_CREDENTIALS: bool = True
+    CORS_ALLOW_METHODS: list[str] = ['*']
+    CORS_ALLOW_HEADERS: list[str] = ['*']
 
 
 @lru_cache

@@ -36,7 +36,7 @@ services:
     networks:
       - dream_network
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready", "-d", "db_prod" ]
+      test: [ "CMD-SHELL", "pg_isready", "-d $$POSTGRES_DB -U $$POSTGRES_USER" ]
       interval: 5s
       timeout: 60s
       retries: 5
