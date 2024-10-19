@@ -1,0 +1,59 @@
+version: '3.1'
+
+services:
+  backend:
+    build:
+      context: ./
+      dockerfile: ./docker/Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    networks:
+      - dream_network
+    depends_on:
+      - db
+      - migrations
+      - redis
+
+  migrations:
+    build:
+      context: ./
+      dockerfile: ./docker/migrations.Dockerfile
+    env_file:
+      .env
+    networks:
+      - dream_network
+
+  db:
+    image: postgres
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    volumes:
+      - pg_store:/var/lib/postgresql/data
+    networks:
+      - dream_network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready", "-d", "db_prod" ]
+      interval: 5s
+      timeout: 60s
+      retries: 5
+
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    env_file:
+      - .env
+    networks:
+      - dream_network
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+
+volumes:
+  pg_store:
+
+networks:
+  dream_network:
