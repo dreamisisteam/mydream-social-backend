@@ -13,8 +13,8 @@ auth_settings: TypeAlias = get_auth_settings()
 
 
 async def authenticate_user(
-        response: Response,
-        auth_info: UserAuthSchema,
+    response: Response,
+    auth_info: UserAuthSchema,
 ) -> User:
     """Авторизация пользователя.
 

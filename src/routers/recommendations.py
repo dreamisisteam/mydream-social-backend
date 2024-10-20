@@ -1,4 +1,5 @@
 import json
+from collections import OrderedDict
 
 import numpy as np
 import redis.asyncio as redis
@@ -44,9 +45,15 @@ async def get_recommendations(
         top_n=settings.PAGE_SIZE,
     )
 
-    response_user_ids = [
-        user_id_map[str(recommendation_user_info[0])]
+    response_users_ids_map: dict[str, User | None] = OrderedDict()
+    response_users_ids_map.update({
+        user_id_map[str(recommendation_user_info[0])]: None
         for recommendation_user_info in recommendation_users_info
         if str(recommendation_user_info[0]) in user_id_map
-    ]
-    return await User.filter(id__in=response_user_ids).order_by('-id').all()
+    })
+
+    async for user in User.filter(id__in=response_users_ids_map.keys()):
+        user: User
+        response_users_ids_map[user.id] = user
+
+    return [user for user in response_users_ids_map.values() if user is not None]

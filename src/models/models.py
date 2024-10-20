@@ -19,6 +19,10 @@ class User(BaseModel):
         null=False,
         validators=[MinLengthValidator(3)],
     )
+    avatar_url = fields.CharField(
+        max_length=1024,
+        null=True
+    )
     name = fields.CharField(
         max_length=16,
         null=False,

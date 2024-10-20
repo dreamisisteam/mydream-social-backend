@@ -30,6 +30,7 @@ class GetUserSchema(BaseModel):
     username: str
     name: str
     surname: str | None
+    avatar_url: str | None
     telegram_link: str
     interests: dict[str, int]
 

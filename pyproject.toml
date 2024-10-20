@@ -21,6 +21,8 @@ aerich = "^0.7.2"
 pyjwt = "^2.9.0"
 redis = "^5.1.1"
 taskiq-fastapi = "^0.3.2"
+beautifulsoup4 = "^4.12.3"
+httpx = "^0.27.2"
 
 
 [tool.poetry.group.dev.dependencies]
