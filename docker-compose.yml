@@ -16,6 +16,19 @@ services:
       - migrations
       - redis
 
+  broker:
+    build:
+      context: ./
+      dockerfile: ./docker/broker.Dockerfile
+    env_file:
+      - .env
+    networks:
+      - dream_network
+    depends_on:
+      - db
+      - migrations
+      - redis
+
   migrations:
     build:
       context: ./

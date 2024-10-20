@@ -38,6 +38,8 @@ async def authenticate_user(
         value=auth_token,
         expires=expiry,
         httponly=True,
+        secure=True,
+        samesite='none',
     )
 
     return user
@@ -57,10 +59,10 @@ async def get_request_user(request: Request) -> User:
     if not auth_token:
         raise HTTPException(status_code=401, detail='Авторизация не выполнена.')
 
-    # try:
-    username = Token(auth_token).username
-    # except Exception:
-    #     raise HTTPException(status_code=401, detail='Некорректные авторизационные данные.')
+    try:
+        username = Token(auth_token).username
+    except Exception:
+        raise HTTPException(status_code=401, detail='Некорректные авторизационные данные.')
 
     user = await models.User.get_or_none(username=username)
     if not user:
