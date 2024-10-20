@@ -26,7 +26,7 @@ async def process_recommendations(users_interests_map: dict[int, list[int]]) -> 
 
     processor = RecommendationsProcessor(
         user_interests_array,
-        **recommendation_settings.model_dump(mode='python', include={'k', 'steps', 'alpha', 'reg_param'}),
+        **recommendation_settings.model_dump(mode='python', include={'k', 'steps', 'alpha', 'reg_param', 'verbose'}),
     )
     stored_recommendations = processor.P
 
