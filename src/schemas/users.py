@@ -41,3 +41,4 @@ class UserInfoSchema(BaseModel):
     username: str
     name: str
     surname: str
+    avatar_url: str | None
