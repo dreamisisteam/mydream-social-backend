@@ -42,3 +42,9 @@ class UserInfoSchema(BaseModel):
     name: str
     surname: str
     avatar_url: str | None
+
+
+class RecommendationUserSchema(UserInfoSchema):
+    """Схема для репрезентации пользователя для рекомендации."""
+
+    rating: str

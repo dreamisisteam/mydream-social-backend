@@ -8,7 +8,7 @@ from fastapi import APIRouter, Request
 from config import get_settings
 from models import User
 from dependencies.auth import RequestUser
-from schemas.users import UserInfoSchema
+from schemas.users import RecommendationUserSchema
 from processors.matrix_factorization import RecommendationsProcessor
 
 settings = get_settings()
@@ -20,11 +20,11 @@ recommendations_api_router = APIRouter(
 
 @recommendations_api_router.get(
     '',
-    response_model=list[UserInfoSchema],
+    response_model=list[RecommendationUserSchema],
 )
 async def get_recommendations(
-        request: Request,
-        user: RequestUser,
+    request: Request,
+    user: RequestUser,
 ):
     """Получение рекомендаций для пользователя.
 
@@ -45,15 +45,16 @@ async def get_recommendations(
         top_n=settings.PAGE_SIZE,
     )
 
-    response_users_ids_map: dict[str, User | None] = OrderedDict()
+    response_users_ids_map: dict[str, float | User] = OrderedDict()
     response_users_ids_map.update({
-        user_id_map[str(recommendation_user_info[0])]: None
+        user_id_map[str(recommendation_user_info[0])]: recommendation_user_info[1]
         for recommendation_user_info in recommendation_users_info
         if str(recommendation_user_info[0]) in user_id_map
     })
 
     async for user in User.filter(id__in=response_users_ids_map.keys()):
         user: User
+        setattr(user, 'rating', f'{float(response_users_ids_map[user.id]):,.3f}')
         response_users_ids_map[user.id] = user
 
     return [user for user in response_users_ids_map.values() if user is not None]

@@ -68,6 +68,7 @@ class RecommendationsSettings(BaseAppSettings):
     steps: int = 500
     alpha: float = 1e-4
     reg_param: float = 0.8
+    verbose: bool = False
 
 
 class Settings(BaseAppSettings):
