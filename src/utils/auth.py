@@ -1,3 +1,4 @@
+import datetime
 from functools import cached_property
 import hashlib
 import jwt
@@ -18,6 +19,14 @@ def generate_password_hash(raw_password: str) -> str:
     ).hexdigest()
 
 
+def _generate_token_exp():
+    """Генерация timestamp на истечение действия токена."""
+    return (
+        datetime.datetime.now(tz=datetime.timezone.utc) +
+        datetime.timedelta(minutes=auth_settings.TOKEN_EXPIRY)
+    ).timestamp()
+
+
 class Token:
     """Логика для токена авторизации."""
 
@@ -33,7 +42,7 @@ class Token:
         :param username: Имя пользователя.
         :return: Авторизационный токен.
         """
-        token_data = {'exp': auth_settings.TOKEN_EXPIRY, 'sub': username}
+        token_data = {'exp': _generate_token_exp(), 'sub': username}
         return jwt.encode(token_data, auth_settings.SECRET_KEY, auth_settings.ALGORITHM)
 
     @cached_property

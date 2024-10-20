@@ -2,32 +2,39 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
+import taskiq_fastapi
 
-from config import get_settings
+from config import get_settings, get_cache_settings
 from database import init_db
 from cache import get_cache
+from broker import init_broker, taskiq_broker
 from routers import (
     auth_api_router,
     users_api_router,
+    recommendations_api_router,
 )
 
 settings = get_settings()
+cache = get_cache_settings()
 
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
     """Цикл жизнедеятельности веб-приложения."""
-    _app.cache = get_cache()
-
     async with init_db(app):
-        yield
+        async with get_cache() as _cache:
+            _app.state.cache = _cache
 
-    await _app.cache.close()
+            async with init_broker():
+                yield
 
 
 app = FastAPI(
     lifespan=lifespan,
 )
+
+taskiq_fastapi.init(taskiq_broker, 'main:app')
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -42,5 +49,6 @@ router = APIRouter(
 )
 router.include_router(auth_api_router, tags=['Authentication'])
 router.include_router(users_api_router, tags=['User'])
+router.include_router(recommendations_api_router, tags=['Recommendations'])
 
 app.include_router(router)

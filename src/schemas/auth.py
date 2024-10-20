@@ -6,11 +6,3 @@ class UserAuthSchema(BaseModel):
 
     username: str
     password: str
-
-
-class UserInfoSchema(BaseModel):
-    """Схема для отображения пользователя."""
-
-    username: str
-    name: str
-    surname: str

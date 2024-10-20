@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException
+from tortoise.exceptions import IntegrityError, ValidationError
 
 from models import User
 from dependencies.users import RegisterUser
@@ -20,7 +21,10 @@ async def register(register_user: RegisterUser) -> None:
     :param register_user: Информация о регистрируемом пользователе.
     :return: 204
     """
-    await register_user.save()
+    try:
+        await register_user.save()
+    except (IntegrityError, ValidationError):
+        raise HTTPException(status_code=400)
 
 
 @users_api_router.get(

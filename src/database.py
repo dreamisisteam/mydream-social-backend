@@ -11,13 +11,15 @@ if TYPE_CHECKING:
 db_settings = get_db_settings()
 
 TORTOISE_ORM = {
-    "connections": {"default": db_settings.url},
-    "apps": {
-        "mydream_social": {
-            "models": [
-                "models.models", "aerich.models"
+    'connections': {'default': db_settings.url},
+    'apps': {
+        'mydream_social': {
+            'models': [
+                'models.models',
+                'models.signals',
+                'aerich.models',
             ],
-            "default_connection": "default",
+            'default_connection': 'default',
         },
     },
 }

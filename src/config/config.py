@@ -61,6 +61,15 @@ class AuthSettings(BaseAppSettings):
     AUTH_COOKIE_KEY: str = 'auth'
 
 
+class RecommendationsSettings(BaseAppSettings):
+    """Конфигурация работы алгоритма рекомендаций."""
+
+    k: int = 5
+    steps: int = 500
+    alpha: float = 1e-4
+    reg_param: float = 0.8
+
+
 class Settings(BaseAppSettings):
     """Конфигурация приложения."""
 
@@ -82,6 +91,8 @@ class Settings(BaseAppSettings):
     CORS_ALLOW_CREDENTIALS: bool = True
     CORS_ALLOW_METHODS: list[str] = ['*']
     CORS_ALLOW_HEADERS: list[str] = ['*']
+
+    PAGE_SIZE: int = 10
 
 
 @lru_cache
@@ -109,6 +120,15 @@ def get_auth_settings() -> AuthSettings:
 
 
 auth_settings: AuthSettings = get_auth_settings()
+
+
+@lru_cache
+def get_recommendations_settings() -> RecommendationsSettings:
+    """Получение настроек рекомендаций."""
+    return RecommendationsSettings()
+
+
+recommendations_settings: RecommendationsSettings = get_recommendations_settings()
 
 
 @lru_cache
