@@ -9,7 +9,7 @@ async def update_users_avatars():
     updated_users = []
     async for user in User.filter():
         user: User
-        user.avatar_url = get_avatar_url(user.telegram_link)
+        user.avatar_url = await get_avatar_url(user.telegram_link)
         updated_users.append(user)
 
     await User.bulk_update(updated_users, fields=['avatar_url'])
