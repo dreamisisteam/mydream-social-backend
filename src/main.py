@@ -13,6 +13,8 @@ from routers import (
     users_api_router,
     recommendations_api_router,
 )
+from tasks.process_recommendations import process_users_info
+from tasks.update_avatars import update_users_avatars
 
 settings = get_settings()
 cache = get_cache_settings()
@@ -26,6 +28,8 @@ async def lifespan(_app: FastAPI):
             _app.state.cache = _cache
 
             async with init_broker():
+                await process_users_info.kiq()
+                await update_users_avatars.kiq()
                 yield
 
 
