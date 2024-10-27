@@ -8,7 +8,13 @@ settings = get_settings()
 
 
 @post_save(User)
-async def process_recommendation(*args, created: bool, **kwargs) -> None:
+async def process_recommendation(
+    sender: type[User],
+    instance: User,
+    created: bool,
+    *args,
+    **kwargs,
+) -> None:
     """Запуск процесса формирования рекомендаций."""
     if created:
         await process_users_info.kiq()
