@@ -102,7 +102,8 @@ class RecommendationsProcessor:
 
         return P, Q
 
-    def cosine_similarity(self, vec1: np.ndarray, vec2: np.ndarray) -> float:
+    @classmethod
+    def cosine_similarity(cls, vec1: np.ndarray, vec2: np.ndarray) -> float:
         """Calculates cosine similarity between two vectors.
 
         Args:
@@ -121,24 +122,31 @@ class RecommendationsProcessor:
             else dot_product / (norm_vec1 * norm_vec2)
         )
 
-    def predict(self, user_id: int, top_n: int = 3) -> List[Tuple[int, float]]:
+    @classmethod
+    def predict(
+        cls,
+        P: np.ndarray,
+        user_id: int,
+        top_n: int = 3,
+        verbose: bool = False,
+    ) -> List[Tuple[int, float]]:
         """
         Recommends top-N users similar to the given user.
         """
-        user_vector = self.P[user_id]
+        user_vector = P[user_id]
         similarities: List[Tuple[int, float]] = [
             (
                 other_user_id,
-                self.cosine_similarity(user_vector, self.P[other_user_id]),
+                cls.cosine_similarity(user_vector, P[other_user_id]),
             )
-            for other_user_id in range(self.P.shape[0])
+            for other_user_id in range(P.shape[0])
             if other_user_id != user_id
         ]
 
         similarities.sort(key=lambda x: x[1], reverse=True)
         top_similar_users = similarities[:top_n]
 
-        if self.verbose:
+        if verbose:
             print(f"Top-{top_n} recommended users for User {user_id + 1}:")
             for idx, (user, similarity) in enumerate(top_similar_users):
                 print(
